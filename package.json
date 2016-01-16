@@ -1,0 +1,24 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "description": "A note example app on iOS and Android",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "notes",
+    "ionic",
+    "ios",
+    "android"
+  ],
+  "author": "Alexander Bogomolov",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.5.2",
+    "express": "^4.13.3",
+    "sequelize": "^3.17.3",
+    "should": "^8.1.1",
+    "sqlite3": "^3.1.1"
+  }
+}
