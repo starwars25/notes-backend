@@ -80,4 +80,17 @@ describe('user_model', function () {
             })
         });
     });
+    it ('should validate uniqueness of nickname', function(done) {
+        var beforeCount;
+        model.User.count().then(function(count) {
+            beforeCount = count;
+            var params = validUser();
+            model.User.create(params).catch(function(error) {
+                model.User.count().then(function(count) {
+                    beforeCount.should.eql(count);
+                    done();
+                });
+            });
+        });
+    });
 });

@@ -26,10 +26,6 @@ var sequelize = new Sequelize(null, null, null, {
 });
 
 var User = sequelize.define('User', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true
-    },
     nickname: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -46,7 +42,30 @@ var User = sequelize.define('User', {
         type: Sequelize.STRING
     }
 });
+var Note = sequelize.define('Note', {
+    theme: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: [4, 100]
+        }
+    },
+    content: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: [10, 140]
+        }
+    },
+    UserId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    }
+});
+User.hasMany(Note);
+Note.belongsTo(User);
 
 module.exports = {
-    User: User
+    User: User,
+    Note: Note
 };

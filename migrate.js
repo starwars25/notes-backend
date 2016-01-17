@@ -1,8 +1,8 @@
 require('./environment')();
 var model = require('./model');
 var async = require('async');
-var models = [model.User];
-async.each(models, function(item, callback) {
+var models = [model.User, model.Note];
+async.eachSeries(models, function(item, callback) {
     item.sync({force: true}).then(function() {
         callback();
     }).catch(function(error) {
