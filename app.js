@@ -8,6 +8,7 @@ if(process.env.NODE_ENVIRONMENT === 'test') {
 }
 require('./controllers/users_controller')(app);
 require('./controllers/sign_in_controller')(app);
+require('./controllers/notes_controller')(app);
 app.listen(port, function() {
     console.log('Listening on %d.', port);
 });

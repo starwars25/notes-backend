@@ -4,7 +4,7 @@ var model = require('../../model');
 var helper = require('../../helpers/test_helper');
 var request = require('../../helpers/request_helper');
 var util = require('util');
-describe('users_controller', function () {
+describe('notes_controller', function () {
     var instances;
     before(function (done) {
         helper.seed('password', function (err, res) {
@@ -118,7 +118,6 @@ describe('users_controller', function () {
         // Invalid params
         // OK
         it('should return 401', function (done) {
-            it('should return 401', function (done) {
                 request({
                     method: 'POST',
                     path: '/notes',
@@ -127,13 +126,12 @@ describe('users_controller', function () {
                     res.status.should.eql(401);
                     done();
                 });
-            });
         });
 
         it('should return 400', function (done) {
             helper.logInUser(instances.users[0], 'token', function (err) {
                 var p = validNote();
-                delete p.note.content;
+                p.note.content = 'aaa';
                 request({
                     method: 'POST',
                     path: '/notes',
@@ -187,6 +185,7 @@ describe('users_controller', function () {
                 data: validNote()
             }, function (res) {
                 res.status.should.eql(401);
+                done();
             });
         });
         it('should return 404', function (done) {
@@ -201,6 +200,7 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(404);
+                    done();
                 });
             });
         });
@@ -216,6 +216,7 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(403);
+                    done();
                 });
             });
         });
@@ -223,23 +224,24 @@ describe('users_controller', function () {
             helper.logInUser(instances.users[0], 'token', function (err) {
                 var p = validNote();
                 p.note.theme = 'Aaa';
-                p.request({
+                request({
                     path: util.format('/notes/%d', instances.notes[0].id),
                     method: 'PUT',
-                    data: validNote(),
+                    data: p,
                     headers: {
                         'user-id': instances.users[0].id,
                         'token': 'token'
                     }
                 }, function (res) {
                     res.status.should.eql(400);
+                    done();
                 });
             });
         });
         it('should return 200', function (done) {
             helper.logInUser(instances.users[0], 'token', function (err) {
                 var p = validNote();
-                p.request({
+                request({
                     path: util.format('/notes/%d', instances.notes[0].id),
                     method: 'PUT',
                     data: validNote(),
@@ -249,6 +251,7 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(200);
+                    done();
                 });
             });
         });
@@ -264,6 +267,7 @@ describe('users_controller', function () {
                 method: 'DELETE'
             }, function (res) {
                 res.status.should.eql(401);
+                done();
             });
         });
         it('should return 404', function (done) {
@@ -277,6 +281,7 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(404);
+                    done();
                 });
             });
         });
@@ -291,13 +296,14 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(403);
+                    done();
                 });
             });
         });
 
         it('should return 200', function (done) {
             helper.logInUser(instances.users[0], 'token', function (err) {
-                p.request({
+                request({
                     path: util.format('/notes/%d', instances.notes[0].id),
                     method: 'DELETE',
                     headers: {
@@ -306,6 +312,7 @@ describe('users_controller', function () {
                     }
                 }, function (res) {
                     res.status.should.eql(200);
+                    done();
                 });
             });
         });
