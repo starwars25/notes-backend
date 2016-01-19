@@ -13,17 +13,23 @@ switch (process.env.NODE_ENVIRONMENT) {
         break;
 
 }
-var sequelize = new Sequelize(null, null, null, {
-    dialect: 'sqlite',
+var sequelize;
+if(process.env.NODE_ENVIRONMENT === 'production') {
+    sequelize = new Sequelize(process.env.DATABASE_URL);
+} else {
+    sequelize = new Sequelize(null, null, null, {
+        dialect: 'sqlite',
 
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000
+        },
 
-    storage: storage
-});
+        storage: storage
+    });
+
+}
 
 var User = sequelize.define('User', {
     nickname: {
