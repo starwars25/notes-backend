@@ -18,7 +18,8 @@ module.exports = {
     },
     seed: function (token, callback) {
         var instances = {
-            users: []
+            users: [],
+            notes: []
         };
         var token_digest;
         async.series([
@@ -69,6 +70,32 @@ module.exports = {
                         }, function (err) {
                             if (err) callback(err);
                             else callback(err);
+                        });
+                    },
+                    function (callback) {
+                        var notes = [{
+                            theme: 'TestTheme0',
+                            content: 'TestContent0',
+                            UserId: instances.users[0].id
+                        }, {
+                            theme: 'TestTheme1',
+                            content: 'TestContent1',
+                            UserId: instances.users[0].id
+                        }, {
+                            theme: 'TestTheme2',
+                            content: 'TestContent2',
+                            UserId: instances.users[1].id
+                        }];
+                        async.eachSeries(notes, function(item, callback) {
+                            model.Note.create(item).then(function(note) {
+                                instances.notes.push(note);
+                                callback();
+                            }).catch(function(error) {
+                                callback(error);
+                            });
+                        }, function(err) {
+                            if (err) callback(err);
+                            else callback();
                         });
                     }
                 ], function (err, results) {

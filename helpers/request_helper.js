@@ -1,5 +1,6 @@
 var http = require('http');
 module.exports = function (params, callback) {
+    if (!params.data) params.data = {};
     var body = JSON.stringify(params.data);
     if (!params.headers) params.headers = {};
     var request_params = {
