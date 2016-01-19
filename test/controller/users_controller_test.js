@@ -99,4 +99,128 @@ describe('users_controller', function() {
             });
         });
     });
+    describe('update', function() {
+        // not logged in
+        // wrong user
+        // invalid params
+        // ok
+        var valid = {
+            user: {
+                nickname: 'starwars255'
+            }
+        };
+        it('should return 401', function(done) {
+            request({
+                method: 'PUT',
+                path: '/users/' + instances.users[0].id,
+                data: valid
+            }, function(res) {
+                res.status.should.eql(401);
+                done();
+            });
+        });
+        it('should return 403', function(done) {
+            helper.logInUser(instances.users[1], 'token', function(err) {
+                request({
+                    method: 'PUT',
+                    path: '/users/' + instances.users[0].id,
+                    data: valid,
+                    headers: {
+                        'user-id': instances.users[1].id.toString(),
+                        'token': 'token'
+                    }
+                }, function(res) {
+                    res.status.should.eql(403);
+                    done();
+                });
+            });
+        });
+        it('should return 404', function(done) {
+            helper.logInUser(instances.users[1], 'token', function(err) {
+                request({
+                    method: 'PUT',
+                    path: '/users/' + 999999,
+                    data: valid,
+                    headers: {
+                        'user-id': instances.users[1].id.toString(),
+                        'token': 'token'
+                    }
+                }, function(res) {
+                    res.status.should.eql(404);
+                    done();
+                });
+            });
+        });
+        it('should return 400', function(done) {
+            helper.logInUser(instances.users[0], 'token', function(err) {
+                request({
+                    method: 'PUT',
+                    path: '/users/' + instances.users[0].id,
+                    data: {
+                        user: {
+                            'nickname': 'aaa'
+                        }
+                    },
+                    headers: {
+                        'user-id': instances.users[0].id.toString(),
+                        'token': 'token'
+                    }
+                }, function(res) {
+                    res.status.should.eql(400);
+                    done();
+                });
+            });
+        });
+        it('should return 200', function(done) {
+            helper.logInUser(instances.users[0], 'token', function(err) {
+                request({
+                    method: 'PUT',
+                    path: '/users/' + instances.users[0].id,
+                    data: valid,
+                    headers: {
+                        'user-id': instances.users[0].id.toString(),
+                        'token': 'token'
+                    }
+                }, function(res) {
+                    res.status.should.eql(200);
+                    instances.users[0].reload().then(function(user) {
+                        done();
+
+                    });
+                });
+            });
+        });
+    });
+    describe('get', function() {
+        // not logged in
+        // ok
+        it('should return 401', function(done) {
+            request({
+                method: 'GET',
+                path: '/users',
+                data: {}
+            }, function(res) {
+                res.status.should.eql(401);
+                done();
+            });
+        });
+        it('should return 200', function(done) {
+            helper.logInUser(instances.users[0], 'token', function(err) {
+                request({
+                    method: 'GET',
+                    path: '/users',
+                    data: {},
+                    headers: {
+                        'user-id': instances.users[0].id.toString(),
+                        'token': 'token'
+                    }
+                }, function(res) {
+                    res.status.should.eql(200);
+                    var json = JSON.parse(res.data);
+                    json.nickname.should.eql(instances.users[0].nickname);
+                    done();
+                });
+            });
+        });
+    });
 });

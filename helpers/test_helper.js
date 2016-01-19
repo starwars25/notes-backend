@@ -54,6 +54,9 @@ module.exports = {
                         var users = [{
                             nickname: 'TestUser1',
                             password_digest: token_digest
+                        }, {
+                            nickname: 'TestUser2',
+                            password_digest: token_digest
                         }];
                         async.eachSeries(users, function (item, callback) {
                             model.User.create(item).then(function (user) {
