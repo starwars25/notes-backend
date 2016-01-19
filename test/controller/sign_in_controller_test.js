@@ -65,4 +65,39 @@ describe('sign_in_controller', function() {
             });
         });
     });
+    describe('sign_out', function() {
+        // not logged in
+        // ok
+        it('should return 401', function(done) {
+            request({
+                method: 'DELETE',
+                path: '/sign-out',
+                data: {}
+            }, function(response) {
+                response.status.should.eql(401);
+                done();
+            });
+        });
+        it('should return 200', function(done) {
+            helper.logInUser(instances.users[0], 'token', function(err) {
+                if(err) console.log(err);
+                request({
+                    method: 'DELETE',
+                    path: '/sign-out',
+                    data: {},
+                    headers: {
+                        'token': 'token',
+                        'user-id': instances.users[0].id.toString()
+                    }
+                }, function(response) {
+                    response.status.should.eql(200);
+                    instances.users[0].reload().then(function(user) {
+                        should.not.exist(user.token_digest);
+                        done();
+
+                    });
+                });
+            });
+        });
+    });
 });

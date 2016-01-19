@@ -82,5 +82,16 @@ module.exports = {
             }
 
         });
+    },
+    logInUser: function(user, token, callback) {
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(token, salt, function(err, hash) {
+                user.update({token_digest: hash}).then(function(user) {
+                    callback();
+                }).catch(function(error) {
+                    callback(error);
+                });
+            });
+        });
     }
 };

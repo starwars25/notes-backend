@@ -1,16 +1,16 @@
 var http = require('http');
 module.exports = function (params, callback) {
     var body = JSON.stringify(params.data);
-
-    var request = http.request({
+    if (!params.headers) params.headers = {};
+    var request_params = {
         port: 9292,
         method: params.method,
         path: params.path,
-        headers: {
-            'content-type': 'application/json',
-            'content-length': body.length
-        }
-    }, function (response) {
+        headers: params.headers
+    };
+    request_params.headers['content-type'] = 'application/json';
+    request_params.headers['content-length'] = body.length;
+    var request = http.request(request_params, function (response) {
         var res = '';
         response.on('data', function (chunk) {
             res += chunk.toString();
